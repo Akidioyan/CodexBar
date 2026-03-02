@@ -41,8 +41,8 @@ public enum CodeBuddyProviderDescriptor {
                 })),
             cli: ProviderCLIConfig(
                 name: "codebuddy",
-                aliases: ["codebuddy-cli"],
-                versionDetector: { _ in nil }))
+                aliases: ["codebuddy-cli", "codebuddy-code"],
+                versionDetector: { _ in ProviderVersionDetector.codeBuddyVersion() }))
     }
 }
 
