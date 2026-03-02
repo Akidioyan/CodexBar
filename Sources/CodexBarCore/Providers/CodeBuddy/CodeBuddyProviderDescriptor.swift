@@ -50,7 +50,7 @@ struct CodeBuddyCLIFetchStrategy: ProviderFetchStrategy {
     }
 
     func fetch(_: ProviderFetchContext) async throws -> ProviderFetchResult {
-        throw ProviderFetchError.noData(reason: "CodeBuddy CLI usage tracking is not yet implemented.")
+        throw ProviderFetchError.noAvailableStrategy(.codeBuddy)
     }
 
     func shouldFallback(on _: Error, context _: ProviderFetchContext) -> Bool {
