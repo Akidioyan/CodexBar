@@ -1,0 +1,51 @@
+name: Build macOS App
+
+on:
+  push:
+    branches: ["feat/add-codebuddy-provider", "main"]
+  workflow_dispatch:
+
+jobs:
+  build-macos-app:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Select Xcode
+        run: |
+          set -euo pipefail
+          for candidate in /Applications/Xcode_26.1.1.app /Applications/Xcode_26.1.app /Applications/Xcode.app; do
+            if [[ -d "$candidate" ]]; then
+              sudo xcode-select -s "${candidate}/Contents/Developer"
+              echo "DEVELOPER_DIR=${candidate}/Contents/Developer" >> "$GITHUB_ENV"
+              break
+            fi
+          done
+          xcodebuild -version
+          swift --version
+
+      - name: Build and Package App
+        run: |
+          set -euo pipefail
+          export CODEXBAR_SIGNING=adhoc
+          ./Scripts/package_app.sh release
+
+      - name: Create ZIP artifact
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          if [[ -d "CodexBar.app" ]]; then
+            ditto -c -k --sequesterRsrc --keepParent CodexBar.app CodexBar.zip
+            echo "APP_ZIP=CodexBar.zip" >> "$GITHUB_ENV"
+          else
+            echo "ERROR: CodexBar.app not found"
+            find . -name "*.app" -maxdepth 2
+            exit 1
+          fi
+
+      - name: Upload CodexBar.app
+        uses: actions/upload-artifact@v4
+        with:
+          name: CodexBar-macOS
+          path: CodexBar.zip
+          retention-days: 30
