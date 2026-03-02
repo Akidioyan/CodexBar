@@ -6,22 +6,23 @@ struct AdvancedPane: View {
     @Bindable var settings: SettingsStore
     @State private var isInstallingCLI = false
     @State private var cliStatus: String?
+    private var loc: LocalizationManager { LocalizationManager.shared }
 
     var body: some View {
         ScrollView(.vertical, showsIndicators: true) {
             VStack(alignment: .leading, spacing: 16) {
                 SettingsSection(contentSpacing: 8) {
-                    Text("Keyboard shortcut")
+                    Text(self.loc.L("advanced.keyboardShortcut"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .textCase(.uppercase)
                     HStack(alignment: .center, spacing: 12) {
-                        Text("Open menu")
+                        Text(self.loc.L("advanced.openMenu"))
                             .font(.body)
                         Spacer()
                         KeyboardShortcuts.Recorder(for: .openMenu)
                     }
-                    Text("Trigger the menu bar menu from anywhere.")
+                    Text(self.loc.L("advanced.triggerMenu"))
                         .font(.footnote)
                         .foregroundStyle(.tertiary)
                 }
@@ -36,7 +37,7 @@ struct AdvancedPane: View {
                             if self.isInstallingCLI {
                                 ProgressView().controlSize(.small)
                             } else {
-                                Text("Install CLI")
+                                Text(self.loc.L("advanced.installCLI"))
                             }
                         }
                         .disabled(self.isInstallingCLI)
@@ -48,7 +49,7 @@ struct AdvancedPane: View {
                                 .lineLimit(2)
                         }
                     }
-                    Text("Symlink CodexBarCLI to /usr/local/bin and /opt/homebrew/bin as codexbar.")
+                    Text(self.loc.L("advanced.installCLI.subtitle"))
                         .font(.footnote)
                         .foregroundStyle(.tertiary)
                 }
@@ -57,12 +58,12 @@ struct AdvancedPane: View {
 
                 SettingsSection(contentSpacing: 10) {
                     PreferenceToggleRow(
-                        title: "Show Debug Settings",
-                        subtitle: "Expose troubleshooting tools in the Debug tab.",
+                        title: self.loc.L("advanced.showDebug"),
+                        subtitle: self.loc.L("advanced.showDebug.subtitle"),
                         binding: self.$settings.debugMenuEnabled)
                     PreferenceToggleRow(
-                        title: "Surprise me",
-                        subtitle: "Check if you like your agents having some fun up there.",
+                        title: self.loc.L("advanced.surprise"),
+                        subtitle: self.loc.L("advanced.surprise.subtitle"),
                         binding: self.$settings.randomBlinkEnabled)
                 }
 
@@ -70,22 +71,19 @@ struct AdvancedPane: View {
 
                 SettingsSection(contentSpacing: 10) {
                     PreferenceToggleRow(
-                        title: "Hide personal information",
-                        subtitle: "Obscure email addresses in the menu bar and menu UI.",
+                        title: self.loc.L("advanced.hidePersonal"),
+                        subtitle: self.loc.L("advanced.hidePersonal.subtitle"),
                         binding: self.$settings.hidePersonalInfo)
                 }
 
                 Divider()
 
                 SettingsSection(
-                    title: "Keychain access",
-                    caption: """
-                    Disable all Keychain reads and writes. Browser cookie import is unavailable; paste Cookie \
-                    headers manually in Providers.
-                    """) {
+                    title: self.loc.L("advanced.keychain"),
+                    caption: self.loc.L("advanced.keychain.subtitle")) {
                         PreferenceToggleRow(
-                            title: "Disable Keychain access",
-                            subtitle: "Prevents any Keychain access while enabled.",
+                            title: self.loc.L("advanced.disableKeychain"),
+                            subtitle: self.loc.L("advanced.disableKeychain.subtitle"),
                             binding: self.$settings.debugDisableKeychainAccess)
                     }
             }
